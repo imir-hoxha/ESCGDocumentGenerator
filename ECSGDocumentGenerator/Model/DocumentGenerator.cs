@@ -5,27 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using ConsoleApp1.Domain;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using ECSGDocumentGenerator.Domain;
 
-namespace ConsoleApp1.Model
+namespace ECSGDocumentGenerator.Model
 {
     public abstract class DocumentGenerator
     {
-        protected const string DocumentRootNode = "DocumentRootNode";
-
-        protected const string DocumentNode = "Document";
-
-        protected const string DocumentContainerPlaceHoldersNode = "DocumentContainerPlaceHolders";
-
-        protected const string DataBoundControlsDataStoreNode = "DataBoundControlsDataStore";
-
-        protected const string DataNode = "Data";
-
-        protected const string DocumentTypeNodeName = "DocumentType";
-
-        protected const string DocumentVersionNodeName = "Version";
 
         private DocumentGenerationInfo generationInfo;
 
@@ -40,7 +29,7 @@ namespace ConsoleApp1.Model
 
         protected abstract Dictionary<string, PlaceHolderType> GetPlaceHolderTagToTypeCollection();
 
-        protected abstract void IgnorePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext);
+        //protected abstract void IgnorePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext);
 
         protected abstract void NonRecursivePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext);
 
@@ -71,7 +60,7 @@ namespace ConsoleApp1.Model
         {
             bool isRefresh = false;
             MainDocumentPart mainDocumentPart = parentContainer.Ancestors<Document>().First().MainDocumentPart;
-            KeyValuePair<string, string> nameToValue = this.customXmlPartHelper.GetNameToValueCollectionFromElementForType(mainDocumentPart, DocumentContainerPlaceHoldersNode, NodeType.Element).Where(f => f.Key.Equals(placeHolder)).FirstOrDefault();
+            KeyValuePair<string, string> nameToValue = this.customXmlPartHelper.GetNameToValueCollectionFromElementForType(mainDocumentPart, DocumentPlaceHolders.DocumentContainerPlaceHoldersNode, NodeType.Element).Where(f => f.Key.Equals(placeHolder)).FirstOrDefault();
 
             isRefresh = !string.IsNullOrEmpty(nameToValue.Value);
 
@@ -85,7 +74,7 @@ namespace ConsoleApp1.Model
             {
                 Dictionary<string, string> nameToValueCollection = new Dictionary<string, string>();
                 nameToValueCollection.Add(placeHolder, parentContainer.OuterXml);
-                this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentRootNode, DocumentContainerPlaceHoldersNode, nameToValueCollection, NodeType.Element);
+                this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentPlaceHolders.DocumentRootNode, DocumentPlaceHolders.DocumentContainerPlaceHoldersNode, nameToValueCollection, NodeType.Element);
             }
 
             return isRefresh;
@@ -126,8 +115,8 @@ namespace ConsoleApp1.Model
         {
             string dataContextAsXml = this.SerializeDataContextToXml();
             Dictionary<string, string> nameToValueCollection = new Dictionary<string, string>();
-            nameToValueCollection.Add(DataNode, dataContextAsXml);
-            this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentRootNode, DataBoundControlsDataStoreNode, nameToValueCollection, NodeType.Element);
+            nameToValueCollection.Add(DocumentPlaceHolders.DataNode, dataContextAsXml);
+            this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentPlaceHolders.DocumentRootNode, DocumentPlaceHolders.DataBoundControlsDataStoreNode, nameToValueCollection, NodeType.Element);
         }
 
         protected void SetDataBinding(string xPath, SdtElement element)
@@ -167,6 +156,7 @@ namespace ConsoleApp1.Model
 
                 if (this.generationInfo.PlaceHolderTagToTypeCollection.ContainsKey(templateTagPart))
                 {
+
                     this.OnPlaceHolderFound(openXmlElementDataContext);
                 }
                 else
@@ -176,6 +166,7 @@ namespace ConsoleApp1.Model
             }
             else
             {
+                Console.WriteLine("Other " + openXmlElementDataContext.Element.LocalName);
                 this.PopulateOtherOpenXmlElements(openXmlElementDataContext);
             }
         }
@@ -225,9 +216,9 @@ namespace ConsoleApp1.Model
             }
 
             Dictionary<string, string> idtoValues = new Dictionary<string, string>();
-            idtoValues.Add(DocumentTypeNodeName, string.IsNullOrEmpty(docProperties.DocumentType) ? string.Empty : docProperties.DocumentType);
-            idtoValues.Add(DocumentVersionNodeName, string.IsNullOrEmpty(docProperties.DocumentVersion) ? string.Empty : docProperties.DocumentVersion);
-            this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentRootNode, DocumentNode, idtoValues, NodeType.Attribute);
+            idtoValues.Add(DocumentPlaceHolders.DocumentTypeNodeName, string.IsNullOrEmpty(docProperties.DocumentType) ? string.Empty : docProperties.DocumentType);
+            idtoValues.Add(DocumentPlaceHolders.DocumentVersionNodeName, string.IsNullOrEmpty(docProperties.DocumentVersion) ? string.Empty : docProperties.DocumentVersion);
+            this.customXmlPartHelper.SetElementFromNameToValueCollectionForType(mainDocumentPart, DocumentPlaceHolders.DocumentRootNode, DocumentPlaceHolders.DocumentNode, idtoValues, NodeType.Attribute);
         }
 
         protected bool IsTemplateTagEqual(SdtElement element, string placeholderName)
@@ -292,6 +283,7 @@ namespace ConsoleApp1.Model
                     if (this.generationInfo.IsDataBoundControls)
                     {
                         SaveDataToDataBoundControlsDataStore(mainDocumentPart);
+
                     }
 
                     foreach (HeaderPart part in mainDocumentPart.HeaderParts)
@@ -321,7 +313,193 @@ namespace ConsoleApp1.Model
             return output;
         }
 
-        private void PopulateOtherOpenXmlElements(OpenXmlElementDataContext openXmlElementDataContext)
+        public byte[] MergeAndGenerateTemplate(string bodyTemplateFile)
+        {
+
+            byte[] output = null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ms.Write(this.generationInfo.TemplateData, 0, this.generationInfo.TemplateData.Length);
+
+                using (WordprocessingDocument wordDocument = WordprocessingDocument.Open(ms, true))
+                {
+                    wordDocument.ChangeDocumentType(WordprocessingDocumentType.Document);
+                    MainDocumentPart mainDocumentPart = wordDocument.MainDocumentPart;
+                    Document mainDocument = mainDocumentPart.Document;
+
+                    if (this.generationInfo.Metadata != null)
+                    {
+                        SetDocumentProperties(mainDocumentPart, this.generationInfo.Metadata);
+                    }
+
+                    if (this.generationInfo.IsDataBoundControls)
+                    {
+                        SaveDataToDataBoundControlsDataStore(mainDocumentPart);
+
+                    }
+
+                    if (this.generationInfo == null)
+                    {
+                        throw new ArgumentNullException("generationInfo");
+                    }
+
+                    if (this.generationInfo.TemplateData == null)
+                    {
+                        throw new ArgumentNullException("templateData");
+                    }
+
+                    this.generationInfo.PlaceHolderTagToTypeCollection = this.GetPlaceHolderTagToTypeCollection();
+
+                    if (this.generationInfo.PlaceHolderTagToTypeCollection == null)
+                    {
+                        throw new ArgumentNullException("PlaceHolderTagToTypeCollection");
+                    }
+
+                    foreach (HeaderPart part in mainDocumentPart.HeaderParts)
+                    {
+                        this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = part.Header, DataContext = this.generationInfo.DataContext });
+                        part.Header.Save();
+                    }
+
+                    foreach (FooterPart part in mainDocumentPart.FooterParts)
+                    {
+                        this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = part.Footer, DataContext = this.generationInfo.DataContext });
+                        part.Footer.Save();
+                    }
+
+                    int counter = 0;
+                    foreach (var repo in this.generationInfo.DataContext as List<Report>)
+                    {
+                        using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                fileStream.CopyTo(memoryStream);
+
+                                using (WordprocessingDocument chunkDocument = WordprocessingDocument.Open(memoryStream, true))
+                                {
+                                    MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
+                                    Document document = mainDocPart.Document;
+                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = repo }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
+                                    document.Save();
+                                }
+
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                               
+                                string altChunkId = "AltChunkId" + Guid.NewGuid();
+                                AlternativeFormatImportPart chunk = wordDocument.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+
+                                chunk.FeedData(memoryStream);
+
+                                AltChunk altChunk = new AltChunk();
+                                altChunk.Id = altChunkId;
+                                counter++;
+                                if (counter > 0)
+                                {
+                                    mainDocumentPart.Document.Body.AppendChild(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+                                }
+
+                                mainDocumentPart.Document.Body.AppendChild(altChunk);
+                                mainDocumentPart.Document.Save();
+
+                            }
+                        }
+                    }
+
+
+                    //this.openXmlHelper.EnsureUniqueContentControlIdsForMainDocumentPart(mainDocumentPart);
+                }
+
+                ms.Position = 0;
+                output = new byte[ms.Length];
+                ms.Read(output, 0, output.Length);
+
+            }
+
+            return output;
+
+
+        }
+
+        public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile)
+        {
+            if (this.generationInfo == null)
+            {
+                throw new ArgumentNullException("generationInfo");
+            }
+
+            if (this.generationInfo.TemplateData == null)
+            {
+                throw new ArgumentNullException("templateData");
+            }
+
+            this.generationInfo.PlaceHolderTagToTypeCollection = this.GetPlaceHolderTagToTypeCollection();
+
+            if (this.generationInfo.PlaceHolderTagToTypeCollection == null)
+            {
+                throw new ArgumentNullException("PlaceHolderTagToTypeCollection");
+            }
+
+
+
+            //open document to be written to
+            using (FileStream fsHeaderTemplate = File.Open(headerTemplateFile, FileMode.Open))
+            {
+                //open filestream in wordprocessingDocument
+                using (WordprocessingDocument headerWordProcessingDoc = WordprocessingDocument.Open(fsHeaderTemplate, true))
+                {
+
+                    MainDocumentPart headerMainPart = headerWordProcessingDoc.MainDocumentPart;
+
+                    //this part here should not be repeated but it should come one by one as report object and not as a list
+                    //to be checked
+                    //TODO
+
+                    int counter = 0;
+                    foreach (var repo in this.generationInfo.DataContext as List<Report>)
+                    {
+
+                        using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                fileStream.CopyTo(memoryStream);
+
+                                using (WordprocessingDocument chunkDocument = WordprocessingDocument.Open(memoryStream, true))
+                                {
+                                    MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
+                                    Document document = mainDocPart.Document;
+                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = repo }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
+                                }
+
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                                string altChunkId = "AltChunkId" + Guid.NewGuid();
+                                AlternativeFormatImportPart chunk = headerWordProcessingDoc.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+
+                                chunk.FeedData(memoryStream);
+
+                                AltChunk altChunk = new AltChunk();
+                                altChunk.Id = altChunkId;
+                                counter++;
+                                //TODO: check the extra unneeded blank page inserted in the document
+                                if (counter > 0)
+                                {
+                                    headerMainPart.Document.Body.AppendChild(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+                                }
+
+                                headerMainPart.Document.Body.AppendChild(altChunk);
+                                headerMainPart.Document.Save();
+
+                            }
+
+                        }
+                    }
+                    }
+                }
+            }
+
+            private void PopulateOtherOpenXmlElements(OpenXmlElementDataContext openXmlElementDataContext)
         {
             if (openXmlElementDataContext.Element is OpenXmlCompositeElement && openXmlElementDataContext.Element.HasChildren)
             {
@@ -329,9 +507,15 @@ namespace ConsoleApp1.Model
 
                 foreach (var element in elements)
                 {
+                    if (element.LocalName == "br")
+                        Console.WriteLine(" -------------= " + element.LocalName);
                     if (element is OpenXmlCompositeElement)
                     {
-                        this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = element, DataContext = openXmlElementDataContext.DataContext });
+                        this.SetContentInPlaceholders(new OpenXmlElementDataContext()
+                        {
+                            Element = element,
+                            DataContext = openXmlElementDataContext.DataContext
+                        });
                     }
                 }
             }
@@ -366,9 +550,9 @@ namespace ConsoleApp1.Model
                     case PlaceHolderType.Recursive:
                         this.RecursivePlaceholderFound(templateTagPart, openXmlElementDataContext);
                         break;
-                    case PlaceHolderType.Ignore:
-                        this.IgnorePlaceholderFound(templateTagPart, openXmlElementDataContext);
-                        break;
+                    //case PlaceHolderType.Ignore:
+                    //    this.IgnorePlaceholderFound(templateTagPart, openXmlElementDataContext);
+                    //    break;
                     case PlaceHolderType.Container:
                         this.ContainerPlaceholderFound(templateTagPart, openXmlElementDataContext);
                         break;

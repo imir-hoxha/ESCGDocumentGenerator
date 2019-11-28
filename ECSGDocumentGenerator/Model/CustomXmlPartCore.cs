@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using DocumentFormat.OpenXml.CustomXmlDataProperties;
 using DocumentFormat.OpenXml.Packaging;
 
-namespace ConsoleApp1.Model
+namespace ECSGDocumentGenerator.Model
 {
     public class CustomXmlPartCore
     {
@@ -79,7 +79,9 @@ namespace ConsoleApp1.Model
             {
                 using (XmlTextReader reader = new XmlTextReader(part.GetStream(FileMode.Open, FileAccess.Read)))
                 {
+                    
                     reader.MoveToContent();
+                    Console.WriteLine("custmexmlpart: " + reader.LocalName + " --> " + reader.NamespaceURI);
                     bool exists = reader.NamespaceURI.Equals(this.namespaceUri);
 
                     if (exists)

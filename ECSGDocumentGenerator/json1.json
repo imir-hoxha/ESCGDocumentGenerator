@@ -1,0 +1,74 @@
+{
+  "number": 0,
+  "last": true,
+  "size": 0,
+  "numberOfElements": 2,
+  "totalPages": 1,
+  "pageable": "INSTANCE",
+  "sort": {
+    "sorted": false,
+    "unsorted": true
+  },
+  "content": [
+    {
+      "hit": {
+        "policyAreas": null,
+        "id": "144a207b-dd48-4ebe-87cb-153e3c6179c4",
+        "sensitiveSummaryDate": null,
+        "knowledge": null,
+        "caseSource": "INF",
+        "lastAdoptedProposalDecision": null,
+        "contactPerson": null,
+        "outline": null,
+        "refId": "20192161",
+        "reasonForSensitivity": "Article 259 TFEU",
+        "lineToTake": null,
+        "ecFunding": false,
+        "authorOfTheSensitiveSummary": null,
+        "lastAdoptedDecisionDate": null,
+        "incriminatedFact": null,
+        "creationDate": "2019-11-03 01:00:00",
+        "caseSensitivitySg": true,
+        "memberState": "SE",
+        "caseType": "CON",
+        "policyContext": null,
+        "legalAssessment": null,
+        "leadDg": {
+          "id": "52062",
+          "text": "EMPL"
+        }
+      }
+    },
+    {
+      "hit": {
+        "policyAreas": null,
+        "id": "8d8f2386-b854-46b4-a3a8-e1cdb7a1e7a8",
+        "sensitiveSummaryDate": null,
+        "knowledge": null,
+        "caseSource": "INF",
+        "lastAdoptedProposalDecision": null,
+        "contactPerson": null,
+        "outline": null,
+        "refId": "20192162",
+        "reasonForSensitivity": "Article 259 TFEU",
+        "lineToTake": null,
+        "ecFunding": false,
+        "authorOfTheSensitiveSummary": null,
+        "lastAdoptedDecisionDate": null,
+        "incriminatedFact": null,
+        "creationDate": "2019-11-04 01:00:00",
+        "caseSensitivitySg": true,
+        "memberState": "SE",
+        "caseType": "BAP",
+        "policyContext": null,
+        "legalAssessment": null,
+        "leadDg": {
+          "id": "5739",
+          "text": "AGRI"
+        }
+      }
+    }
+  ],
+  "first": true,
+  "totalElements": 2
+}

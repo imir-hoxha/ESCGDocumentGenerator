@@ -1,10 +1,11 @@
-﻿using System;
+﻿using ECSGDocumentGenerator.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.Model
+namespace ECSGDocumentGenerator.Model
 {
     public class ContentControlXmlMetadata
     {

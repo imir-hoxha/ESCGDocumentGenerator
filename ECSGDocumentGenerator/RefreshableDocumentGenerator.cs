@@ -1,9 +1,9 @@
-﻿using ConsoleApp1.Model;
+﻿using ECSGDocumentGenerator.Model;
 using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace ConsoleApp1
 {
-    internal class RefreshableDocumentGenerator : ECSGDocumentGenerator
+    internal class RefreshableDocumentGenerator : NonSensitiveDocumentGenerator
     {
         //private DocumentGenerationInfo generationInfo;
 

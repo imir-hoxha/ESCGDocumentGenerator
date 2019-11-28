@@ -1,11 +1,11 @@
 ﻿using ConsoleApp1.Domain;
-using ConsoleApp1.Model;
+using ECSGDocumentGenerator.Model;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Collections.Generic;
 
 namespace ConsoleApp1
 {
-    public class ECSGDocumentGenerator : DocumentGenerator
+    public class NonSensitiveDocumentGenerator : DocumentGenerator
     {
         #region PlaceHolders
         // Content Control Tags
@@ -35,8 +35,9 @@ namespace ConsoleApp1
         protected const string PlaceholderNonRecursiveN = "PlaceholderNonRecursiveN";
         #endregion
 
-        public ECSGDocumentGenerator(DocumentGenerationInfo generationInfo) : base(generationInfo) { }
+        public NonSensitiveDocumentGenerator(DocumentGenerationInfo generationInfo) : base(generationInfo) { }
 
+        //it is overwritten here but it does not get used directly. it is called in the deriving class
         protected override Dictionary<string, PlaceHolderType> GetPlaceHolderTagToTypeCollection()
         {
             Dictionary<string, PlaceHolderType> placeHolderTagToTypeCollection = new Dictionary<string, PlaceHolderType>
@@ -219,10 +220,10 @@ namespace ConsoleApp1
             }
         }
 
-        protected override void IgnorePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
-        {
-            //throw new System.NotImplementedException();
-        }
+        //protected override void IgnorePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
+        //{
+        //    //throw new System.NotImplementedException();
+        //}
 
     }
 }

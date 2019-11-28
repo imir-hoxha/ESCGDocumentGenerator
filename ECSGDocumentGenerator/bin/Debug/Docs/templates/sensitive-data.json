@@ -1,7 +1,164 @@
 {
-  "C1": "Findland",
-  "C2": "Title",
-  "C24": "Lead DG",
-  "C18": "Infr",
-  "P1": "Decision type"
+  "content": [
+    {
+      "hit": {
+        "policyAreas": "policy Areas",
+        "id": "50f13ad3-1335-4e75-9eb2-c07ddf26943BB",
+        "sensitiveSummaryDate": "05/11/2019",
+        "knowledge": "knowledge",
+        "caseSource": "INF",
+        "contactPerson": "fabio.di-donato@ext.ec.europa.eu",
+        "outline": "outline",
+        "lastAdoptedProposalDecision": "type of last adopted decision",
+        "refId": "20192398",
+        "reasonForSensitivity": "Article 259 TFEU",
+        "lineToTake": "line to take",
+        "ecFunding": false,
+        "authorOfTheSensitiveSummary": "author",
+        "lastAdoptedDecisionDate": "2019-11-06 01:00:00",
+        "memberState": "SE",
+        "policyContext": "policy Context",
+        "legalAssessment": "legal assessment",
+        "leadDg": {
+          "id": "230192",
+          "text": "CLIMA"
+        },
+        "memberStates": [
+          "BE",
+          "DE",
+          "IT"
+        ],
+        "caseTitle": "1 SensitiveCase Test. Lead DG: CLIMA, Member states: BE-DE-IT, Reason: Regulations-Treaties-Decisions",
+        "reason": "To test SensitiveCase functionality Test n.01 of 01/11/2019",
+        "caseType": "RTD",
+        "caseSensitivity": true,
+        "caseSensitivitySg": true,
+        "caseSensitivityLs": true,
+        "legalBasis": [
+          {
+            "selected": false,
+            "disabled": false,
+            "text": "32019L1161",
+            "id": "32019L1161"
+          }
+        ],
+        "creationDate": "2019-11-04 01:00:00",
+        "article259": true,
+        "disabled": false
+      
+      }
+    },
+    {
+      "hit": {
+        "policyAreas": "policy Areas",
+        "id": "7da53603-b3e8-49a9-9667-2160a5e6401d",
+        "sensitiveSummaryDate": "05/11/2019",
+        "knowledge": "knowledge",
+        "caseSource": "INF",
+        "contactPerson": "fabio.di-donato@ext.ec.europa.eu",
+        "outline": "outline",
+        "lastAdoptedProposalDecision": "type of last adopted decision",
+        "refId": "20192397",
+        "reasonForSensitivity": "Article 259 TFEU",
+        "lineToTake": "line to take",
+        "ecFunding": false,
+        "authorOfTheSensitiveSummary": "author",
+        "lastAdoptedDecisionDate": "2019-11-06 01:00:00",
+        "incriminatedFact": "incriminated fact",
+        "policyContext": "policy Context",
+        "legalAssessment": "legal assessment",
+        "leadDg": {
+          "id": "234708",
+          "text": "ENV"
+        },
+        "memberStates": [
+          "BE",
+          "FR",
+          "ES" 
+        ],
+        "caseTitle": "2 SensitiveCase Test. Lead DG: ENV, Member states: BE-FR-ES, Reason: Non communication",
+        "reason": "To test SensitiveCase functionality Test n.02 of 02/11/2019",
+        "caseType": "COM",
+        "caseSensitivity": true,
+        "caseSensitivitySg": true,
+        "caseSensitivityLs": true,
+        "legalBasis": [
+          {
+            "selected": false,
+            "disabled": false,
+            "text": "32019L1023",
+            "id": "32019L1023"
+          }
+        ],
+        "creationDate": "2019-11-02",
+        "article259": true,
+        "disabled": false
+      
+      }
+    }
+    ,
+    {
+      "hit": {
+        "policyAreas": "policy Areas",
+        "id": "7da53603-b3e8-49a9-9667-2160a5e6401c",
+        "sensitiveSummaryDate": "05/11/2019",
+        "knowledge": "knowledge",
+        "caseSource": "INF",
+        "contactPerson": "fabio.di-donato@ext.ec.europa.eu",
+        "outline": "outline",
+        "lastAdoptedProposalDecision": "type of last adopted decision",
+        "refId": "20192397",
+        "reasonForSensitivity": "Article 259 TFEU",
+        "lineToTake": "line to take",
+        "ecFunding": false,
+        "authorOfTheSensitiveSummary": "author",
+        "lastAdoptedDecisionDate": "2019-11-06 01:00:00",
+        "incriminatedFact": "incriminated fact",
+         "memberState": "SE",
+        "policyContext": "policy Context",
+        "legalAssessment": "legal assessment",
+        "leadDg": {
+          "id": "52062",
+          "text": "EMPL"
+        },
+        "memberStates": [
+         "AT", 
+         "EL", 
+         "IT", 
+         "PT", 
+         "SE"
+        ],
+        "caseTitle": "3 SensitiveCase Test.  Lead DG: TRADE, Member states: AT-EL-IT-PT-SE, Reason: Non conformity",
+        "reason": "To test SensitiveCase functionality Test n.03 of 03/11/2019",
+        "caseType": "CON",
+        "caseSensitivity": true,
+        "caseSensitivitySg": true,
+        "caseSensitivityLs": true,
+        "legalBasis": [
+          {
+            "selected": false,
+            "disabled": false,
+            "text": "32019L1834", 
+          "id": "32019L1834"
+          }
+        ],
+        "creationDate": "2019-11-03",
+        "article259": true,
+        "disabled": false
+      
+      }
+    }
+  ],
+  "pageable": "INSTANCE",
+  "totalElements": 2,
+  "last": true,
+  "totalPages": 1,
+  "size": 20,
+  "number": 0,
+  "sort": {
+    "sorted": false,
+    "unsorted": true
+  },
+  "first": true,
+  "numberOfElements": 2
 }

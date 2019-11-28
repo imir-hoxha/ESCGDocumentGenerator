@@ -5,7 +5,7 @@ using System.Xml;
 using System.Xml.Linq;
 using DocumentFormat.OpenXml.Packaging;
 
-namespace ConsoleApp1.Model
+namespace ECSGDocumentGenerator.Model
 {
     public class CustomXmlPartHelper
     {

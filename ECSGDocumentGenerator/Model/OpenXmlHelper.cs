@@ -9,7 +9,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Validation;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace ConsoleApp1.Model
+namespace ECSGDocumentGenerator.Model
 {
     public class OpenXmlHelper
     {
@@ -47,94 +47,94 @@ namespace ConsoleApp1.Model
             return errors.Count <= 0;
         }
 
-        public byte[] AppendDocumentsToPrimaryDocument(byte[] primaryDocument, List<byte[]> documentstoAppend)
-        {
-            if (documentstoAppend == null)
-            {
-                throw new ArgumentNullException("documentstoAppend");
-            }
+        //public byte[] AppendDocumentsToPrimaryDocument(byte[] primaryDocument, List<byte[]> documentstoAppend)
+        //{
+        //    if (documentstoAppend == null)
+        //    {
+        //        throw new ArgumentNullException("documentstoAppend");
+        //    }
 
-            if (primaryDocument == null)
-            {
-                throw new ArgumentNullException("primaryDocument");
-            }
+        //    if (primaryDocument == null)
+        //    {
+        //        throw new ArgumentNullException("primaryDocument");
+        //    }
 
-            byte[] output = null;
+        //    byte[] output = null;
 
-            using (MemoryStream finalDocumentStream = new MemoryStream())
-            {
-                finalDocumentStream.Write(primaryDocument, 0, primaryDocument.Length);
+        //    using (MemoryStream finalDocumentStream = new MemoryStream())
+        //    {
+        //        finalDocumentStream.Write(primaryDocument, 0, primaryDocument.Length);
 
-                using (WordprocessingDocument finalDocument = WordprocessingDocument.Open(finalDocumentStream, true))
-                {
-                    SectionProperties finalDocSectionProperties = null;
-                    this.UnprotectDocument(finalDocument);
+        //        using (WordprocessingDocument finalDocument = WordprocessingDocument.Open(finalDocumentStream, true))
+        //        {
+        //            SectionProperties finalDocSectionProperties = null;
+        //            this.UnprotectDocument(finalDocument);
 
-                    SectionProperties tempSectionProperties = finalDocument.MainDocumentPart.Document.Descendants<SectionProperties>().LastOrDefault();
+        //            SectionProperties tempSectionProperties = finalDocument.MainDocumentPart.Document.Descendants<SectionProperties>().LastOrDefault();
 
-                    if (tempSectionProperties != null)
-                    {
-                        finalDocSectionProperties = tempSectionProperties.CloneNode(true) as SectionProperties;
-                    }
+        //            if (tempSectionProperties != null)
+        //            {
+        //                finalDocSectionProperties = tempSectionProperties.CloneNode(true) as SectionProperties;
+        //            }
 
-                    this.RemoveContentControlsAndKeepContents(finalDocument.MainDocumentPart.Document);
+        //            this.RemoveContentControlsAndKeepContents(finalDocument.MainDocumentPart.Document);
 
-                    foreach (byte[] documentToAppend in documentstoAppend)
-                    {
-                        AlternativeFormatImportPart subReportPart = finalDocument.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML);
-                        SectionProperties secProperties = null;
+        //            foreach (byte[] documentToAppend in documentstoAppend)
+        //            {
+        //                AlternativeFormatImportPart subReportPart = finalDocument.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML);
+        //                SectionProperties secProperties = null;
 
-                        using (MemoryStream docToAppendStream = new MemoryStream())
-                        {
-                            docToAppendStream.Write(documentToAppend, 0, documentToAppend.Length);
+        //                using (MemoryStream docToAppendStream = new MemoryStream())
+        //                {
+        //                    docToAppendStream.Write(documentToAppend, 0, documentToAppend.Length);
 
-                            using (WordprocessingDocument docToAppend = WordprocessingDocument.Open(docToAppendStream, true))
-                            {
-                                this.UnprotectDocument(docToAppend);
+        //                    using (WordprocessingDocument docToAppend = WordprocessingDocument.Open(docToAppendStream, true))
+        //                    {
+        //                        this.UnprotectDocument(docToAppend);
 
-                                tempSectionProperties = docToAppend.MainDocumentPart.Document.Descendants<SectionProperties>().LastOrDefault();
+        //                        tempSectionProperties = docToAppend.MainDocumentPart.Document.Descendants<SectionProperties>().LastOrDefault();
 
-                                if (tempSectionProperties != null)
-                                {
-                                    secProperties = tempSectionProperties.CloneNode(true) as SectionProperties;
-                                }
+        //                        if (tempSectionProperties != null)
+        //                        {
+        //                            secProperties = tempSectionProperties.CloneNode(true) as SectionProperties;
+        //                        }
 
-                                this.RemoveContentControlsAndKeepContents(docToAppend.MainDocumentPart.Document);
-                                docToAppend.MainDocumentPart.Document.Save();
-                            }
+        //                        this.RemoveContentControlsAndKeepContents(docToAppend.MainDocumentPart.Document);
+        //                        docToAppend.MainDocumentPart.Document.Save();
+        //                    }
 
-                            docToAppendStream.Position = 0;
-                            subReportPart.FeedData(docToAppendStream);
-                        }
+        //                    docToAppendStream.Position = 0;
+        //                    subReportPart.FeedData(docToAppendStream);
+        //                }
 
-                        if (documentstoAppend.ElementAtOrDefault(0).Equals(documentToAppend))
-                        {
-                            AssignSectionProperties(finalDocument.MainDocumentPart.Document, finalDocSectionProperties);
-                        }
+        //                if (documentstoAppend.ElementAtOrDefault(0).Equals(documentToAppend))
+        //                {
+        //                    AssignSectionProperties(finalDocument.MainDocumentPart.Document, finalDocSectionProperties);
+        //                }
 
-                        AltChunk altChunk = new AltChunk();
-                        altChunk.Id = finalDocument.MainDocumentPart.GetIdOfPart(subReportPart);
-                        finalDocument.MainDocumentPart.Document.AppendChild(altChunk);
+        //                AltChunk altChunk = new AltChunk();
+        //                altChunk.Id = finalDocument.MainDocumentPart.GetIdOfPart(subReportPart);
+        //                finalDocument.MainDocumentPart.Document.AppendChild(altChunk);
 
-                        if (!documentstoAppend.ElementAtOrDefault(documentstoAppend.Count - 1).Equals(documentToAppend))
-                        {
-                            AssignSectionProperties(finalDocument.MainDocumentPart.Document, secProperties);
-                        }
+        //                if (!documentstoAppend.ElementAtOrDefault(documentstoAppend.Count - 1).Equals(documentToAppend))
+        //                {
+        //                    AssignSectionProperties(finalDocument.MainDocumentPart.Document, secProperties);
+        //                }
 
-                        finalDocument.MainDocumentPart.Document.Save();
-                    }
+        //                finalDocument.MainDocumentPart.Document.Save();
+        //            }
 
-                    finalDocument.MainDocumentPart.Document.Save();
-                }
+        //            finalDocument.MainDocumentPart.Document.Save();
+        //        }
 
-                finalDocumentStream.Position = 0;
-                output = new byte[finalDocumentStream.Length];
-                finalDocumentStream.Read(output, 0, output.Length);
-                finalDocumentStream.Close();
-            }
+        //        finalDocumentStream.Position = 0;
+        //        output = new byte[finalDocumentStream.Length];
+        //        finalDocumentStream.Read(output, 0, output.Length);
+        //        finalDocumentStream.Close();
+        //    }
 
-            return output;
-        }
+        //    return output;
+        //}
 
         public OpenXmlCompositeElement GetSdtContentOfContentControl(SdtElement element)
         {
@@ -163,102 +163,102 @@ namespace ConsoleApp1.Model
             return null;
         }
 
-        public void ProtectDocument(WordprocessingDocument wordprocessingDocument)
-        {
-            if (wordprocessingDocument == null)
-            {
-                throw new ArgumentNullException("wordprocessingDocument");
-            }
+        //public void ProtectDocument(WordprocessingDocument wordprocessingDocument)
+        //{
+        //    if (wordprocessingDocument == null)
+        //    {
+        //        throw new ArgumentNullException("wordprocessingDocument");
+        //    }
 
-            DocumentSettingsPart documentSettingsPart = wordprocessingDocument.MainDocumentPart.GetPartsOfType<DocumentSettingsPart>().FirstOrDefault();
+        //    DocumentSettingsPart documentSettingsPart = wordprocessingDocument.MainDocumentPart.GetPartsOfType<DocumentSettingsPart>().FirstOrDefault();
 
-            if (documentSettingsPart != null)
-            {
-                var documentProtection = documentSettingsPart.Settings.Elements<DocumentProtection>().FirstOrDefault();
+        //    if (documentSettingsPart != null)
+        //    {
+        //        var documentProtection = documentSettingsPart.Settings.Elements<DocumentProtection>().FirstOrDefault();
 
-                if (documentProtection != null)
-                {
-                    documentProtection.Enforcement = true;
-                }
-                else
-                {
-                    documentProtection = new DocumentProtection() { Edit = DocumentProtectionValues.Comments, Enforcement = true, CryptographicProviderType = CryptProviderValues.RsaFull, CryptographicAlgorithmClass = CryptAlgorithmClassValues.Hash, CryptographicAlgorithmType = CryptAlgorithmValues.TypeAny, CryptographicAlgorithmSid = 4, CryptographicSpinCount = (UInt32Value)100000U, Hash = "2krUoz1qWd0WBeXqVrOq81l8xpk=", Salt = "9kIgmDDYtt2r5U2idCOwMA==" };
-                    documentSettingsPart.Settings.Append(documentProtection);
-                }
-            }
+        //        if (documentProtection != null)
+        //        {
+        //            documentProtection.Enforcement = true;
+        //        }
+        //        else
+        //        {
+        //            documentProtection = new DocumentProtection() { Edit = DocumentProtectionValues.Comments, Enforcement = true, CryptographicProviderType = CryptProviderValues.RsaFull, CryptographicAlgorithmClass = CryptAlgorithmClassValues.Hash, CryptographicAlgorithmType = CryptAlgorithmValues.TypeAny, CryptographicAlgorithmSid = 4, CryptographicSpinCount = (UInt32Value)100000U, Hash = "2krUoz1qWd0WBeXqVrOq81l8xpk=", Salt = "9kIgmDDYtt2r5U2idCOwMA==" };
+        //            documentSettingsPart.Settings.Append(documentProtection);
+        //        }
+        //    }
 
-            wordprocessingDocument.MainDocumentPart.Document.Save();
-        }
-        public void UnprotectDocument(WordprocessingDocument wordprocessingDocument)
-        {
-            if (wordprocessingDocument == null)
-            {
-                throw new ArgumentNullException("wordprocessingDocument");
-            }
+        //    wordprocessingDocument.MainDocumentPart.Document.Save();
+        //}
+        //public void UnprotectDocument(WordprocessingDocument wordprocessingDocument)
+        //{
+        //    if (wordprocessingDocument == null)
+        //    {
+        //        throw new ArgumentNullException("wordprocessingDocument");
+        //    }
 
-            DocumentSettingsPart documentSettingsPart = wordprocessingDocument.MainDocumentPart.GetPartsOfType<DocumentSettingsPart>().FirstOrDefault();
+        //    DocumentSettingsPart documentSettingsPart = wordprocessingDocument.MainDocumentPart.GetPartsOfType<DocumentSettingsPart>().FirstOrDefault();
 
-            if (documentSettingsPart != null)
-            {
-                var documentProtection = documentSettingsPart.Settings.Elements<DocumentProtection>().FirstOrDefault();
+        //    if (documentSettingsPart != null)
+        //    {
+        //        var documentProtection = documentSettingsPart.Settings.Elements<DocumentProtection>().FirstOrDefault();
 
-                if (documentProtection != null)
-                {
-                    documentProtection.Remove();
-                }
-            }
+        //        if (documentProtection != null)
+        //        {
+        //            documentProtection.Remove();
+        //        }
+        //    }
 
-            List<OpenXmlLeafElement> permElements = new List<OpenXmlLeafElement>();
+        //    List<OpenXmlLeafElement> permElements = new List<OpenXmlLeafElement>();
 
-            foreach (var permStart in wordprocessingDocument.MainDocumentPart.Document.Body.Descendants<PermStart>())
-            {
-                if (!permElements.Contains(permStart))
-                {
-                    permElements.Add(permStart);
-                }
-            }
+        //    foreach (var permStart in wordprocessingDocument.MainDocumentPart.Document.Body.Descendants<PermStart>())
+        //    {
+        //        if (!permElements.Contains(permStart))
+        //        {
+        //            permElements.Add(permStart);
+        //        }
+        //    }
 
-            foreach (var permEnd in wordprocessingDocument.MainDocumentPart.Document.Body.Descendants<PermEnd>())
-            {
-                if (!permElements.Contains(permEnd))
-                {
-                    permElements.Add(permEnd);
-                }
-            }
+        //    foreach (var permEnd in wordprocessingDocument.MainDocumentPart.Document.Body.Descendants<PermEnd>())
+        //    {
+        //        if (!permElements.Contains(permEnd))
+        //        {
+        //            permElements.Add(permEnd);
+        //        }
+        //    }
 
-            foreach (var permElem in permElements)
-            {
-                if (permElem.Parent != null)
-                {
-                    permElem.Remove();
-                }
-            }
+        //    foreach (var permElem in permElements)
+        //    {
+        //        if (permElem.Parent != null)
+        //        {
+        //            permElem.Remove();
+        //        }
+        //    }
 
-            wordprocessingDocument.MainDocumentPart.Document.Save();
-        }
+        //    wordprocessingDocument.MainDocumentPart.Document.Save();
+        //}
 
-        public void RemoveContentControlsAndKeepContents(Document document)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException("document");
-            }
+        //public void RemoveContentControlsAndKeepContents(Document document)
+        //{
+        //    if (document == null)
+        //    {
+        //        throw new ArgumentNullException("document");
+        //    }
 
-            CustomXmlPartCore customXmlPartCore = new CustomXmlPartCore(this.NamespaceUri);
-            CustomXmlPart customXmlPart = customXmlPartCore.GetCustomXmlPart(document.MainDocumentPart);
-            XmlDocument customPartDoc = new XmlDocument();
+        //    CustomXmlPartCore customXmlPartCore = new CustomXmlPartCore(this.NamespaceUri);
+        //    CustomXmlPart customXmlPart = customXmlPartCore.GetCustomXmlPart(document.MainDocumentPart);
+        //    XmlDocument customPartDoc = new XmlDocument();
 
-            if (customXmlPart != null)
-            {
-                using (XmlReader reader = XmlReader.Create(customXmlPart.GetStream(FileMode.Open, FileAccess.Read)))
-                {
-                    customPartDoc.Load(reader);
-                }
-            }
+        //    if (customXmlPart != null)
+        //    {
+        //        using (XmlReader reader = XmlReader.Create(customXmlPart.GetStream(FileMode.Open, FileAccess.Read)))
+        //        {
+        //            customPartDoc.Load(reader);
+        //        }
+        //    }
 
-            RemoveContentControlsAndKeepContents(document.Body, customPartDoc.DocumentElement);
-            document.Save();
-        }
+        //    RemoveContentControlsAndKeepContents(document.Body, customPartDoc.DocumentElement);
+        //    document.Save();
+        //}
 
         public void RemoveContentControlsAndKeepContents(OpenXmlCompositeElement compositeElement, XmlElement customXmlPartDocElement)
         {
@@ -564,27 +564,27 @@ namespace ConsoleApp1.Model
             }
         }
 
-        private void SetSdtContentKeepingPermissionElements(OpenXmlCompositeElement openXmlCompositeElement, List<OpenXmlElement> newChildren)
-        {
-            PermStart start = openXmlCompositeElement.Descendants<PermStart>().FirstOrDefault();
-            PermEnd end = openXmlCompositeElement.Descendants<PermEnd>().FirstOrDefault();
-            openXmlCompositeElement.RemoveAllChildren();
+        //private void SetSdtContentKeepingPermissionElements(OpenXmlCompositeElement openXmlCompositeElement, List<OpenXmlElement> newChildren)
+        //{
+        //    PermStart start = openXmlCompositeElement.Descendants<PermStart>().FirstOrDefault();
+        //    PermEnd end = openXmlCompositeElement.Descendants<PermEnd>().FirstOrDefault();
+        //    openXmlCompositeElement.RemoveAllChildren();
 
-            if (start != null)
-            {
-                openXmlCompositeElement.AppendChild(start);
-            }
+        //    if (start != null)
+        //    {
+        //        openXmlCompositeElement.AppendChild(start);
+        //    }
 
-            foreach (var newChild in newChildren)
-            {
-                openXmlCompositeElement.AppendChild(newChild);
-            }
+        //    foreach (var newChild in newChildren)
+        //    {
+        //        openXmlCompositeElement.AppendChild(newChild);
+        //    }
 
-            if (end != null)
-            {
-                openXmlCompositeElement.AppendChild(end);
-            }
-        }
+        //    if (end != null)
+        //    {
+        //        openXmlCompositeElement.AppendChild(end);
+        //    }
+        //}
 
         private void AddRunsToSdtContentCell(SdtContentCell sdtContentCell, List<Run> runs)
         {
@@ -632,32 +632,32 @@ namespace ConsoleApp1.Model
             }
         }
 
-        private void AssignSectionProperties(Document document, SectionProperties secProperties)
-        {
-            if (document == null)
-            {
-                throw new ArgumentNullException("document");
-            }
+        //private void AssignSectionProperties(Document document, SectionProperties secProperties)
+        //{
+        //    if (document == null)
+        //    {
+        //        throw new ArgumentNullException("document");
+        //    }
 
-            if (secProperties != null)
-            {
-                PageSize pageSize = secProperties.Descendants<PageSize>().FirstOrDefault();
+        //    if (secProperties != null)
+        //    {
+        //        PageSize pageSize = secProperties.Descendants<PageSize>().FirstOrDefault();
 
-                if (pageSize != null)
-                {
-                    pageSize.Remove();
-                }
+        //        if (pageSize != null)
+        //        {
+        //            pageSize.Remove();
+        //        }
 
-                PageMargin pageMargin = secProperties.Descendants<PageMargin>().FirstOrDefault();
+        //        PageMargin pageMargin = secProperties.Descendants<PageMargin>().FirstOrDefault();
 
-                if (pageMargin != null)
-                {
-                    pageMargin.Remove();
-                }
+        //        if (pageMargin != null)
+        //        {
+        //            pageMargin.Remove();
+        //        }
 
-                document.AppendChild(new Paragraph(new ParagraphProperties(new SectionProperties(pageSize, pageMargin))));
-            }
-        }
+        //        document.AppendChild(new Paragraph(new ParagraphProperties(new SectionProperties(pageSize, pageMargin))));
+        //    }
+        //}
 
         private static Paragraph CreateParagraph(OpenXmlCompositeElement openXmlCompositeElement, List<Run> runs)
         {
@@ -686,8 +686,7 @@ namespace ConsoleApp1.Model
         private static Run CreateRun(OpenXmlCompositeElement openXmlCompositeElement, string content)
         {
             RunProperties runProperties = openXmlCompositeElement.Descendants<RunProperties>().FirstOrDefault();
-            Run run = null;
-
+            Run run;
             if (runProperties != null)
             {
                 run = new Run(runProperties.CloneNode(true), new Text(content));
