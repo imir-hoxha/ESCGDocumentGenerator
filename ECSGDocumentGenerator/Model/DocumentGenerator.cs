@@ -315,7 +315,6 @@ namespace ECSGDocumentGenerator.Model
 
         public byte[] MergeAndGenerateTemplate(string bodyTemplateFile)
         {
-
             byte[] output = null;
 
             using (MemoryStream ms = new MemoryStream())
@@ -369,8 +368,13 @@ namespace ECSGDocumentGenerator.Model
                     }
 
                     int counter = 0;
-                    foreach (var repo in this.generationInfo.DataContext as List<Report>)
-                    {
+                    //for (int i = 0; i < content.Length; i++)
+                    //{
+                    //    Console.WriteLine(i + ") " + content[i].hit.reasonForSensitivity);
+                    //}
+
+                    //foreach (var repo in this.generationInfo.DataContext)
+                    //{
                         using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
                         {
                             using (var memoryStream = new MemoryStream())
@@ -381,7 +385,7 @@ namespace ECSGDocumentGenerator.Model
                                 {
                                     MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
                                     Document document = mainDocPart.Document;
-                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = repo }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
+                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = this.generationInfo.DataContext }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
                                     document.Save();
                                 }
 
@@ -405,7 +409,7 @@ namespace ECSGDocumentGenerator.Model
 
                             }
                         }
-                    }
+                    //}
 
 
                     //this.openXmlHelper.EnsureUniqueContentControlIdsForMainDocumentPart(mainDocumentPart);
@@ -457,8 +461,8 @@ namespace ECSGDocumentGenerator.Model
                     //TODO
 
                     int counter = 0;
-                    foreach (var repo in this.generationInfo.DataContext as List<Report>)
-                    {
+                    //foreach (var repo in this.generationInfo.DataContext)
+                    //{
 
                         using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
                         {
@@ -470,7 +474,7 @@ namespace ECSGDocumentGenerator.Model
                                 {
                                     MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
                                     Document document = mainDocPart.Document;
-                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = repo }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
+                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = this.generationInfo.DataContext }); //here "DataContext = repo" should be replaced with "DataContext = this.generationInfo.DataContext"
                                 }
 
                                 memoryStream.Seek(0, SeekOrigin.Begin);
@@ -494,7 +498,7 @@ namespace ECSGDocumentGenerator.Model
                             }
 
                         }
-                    }
+                    //}
                     }
                 }
             }

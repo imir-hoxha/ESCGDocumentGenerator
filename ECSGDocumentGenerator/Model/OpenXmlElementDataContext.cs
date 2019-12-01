@@ -11,6 +11,6 @@ namespace ECSGDocumentGenerator.Model
     {
         public OpenXmlElement Element { get; set; }
 
-        public object DataContext { get; set; }
+        public Content DataContext { get; set; }
     }
 }

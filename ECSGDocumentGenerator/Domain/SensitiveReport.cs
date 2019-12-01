@@ -10,11 +10,11 @@ namespace ECSGDocumentGenerator
     public class SensitiveReport
     {
         public string Id { get; set; }
-        public Content[] content { get; set; }
-        public string pageable { get; set; }
-        public int totalElements { get; set; }
-        public bool last { get; set; }
-        public int totalPages { get; set; }
+        public Content[] Content { get; set; }
+        public string Pageable { get; set; }
+        public int TotalElements { get; set; }
+        public bool Last { get; set; }
+        public int TotalPages { get; set; }
         public int size { get; set; }
         public int number { get; set; }
         public Sort sort { get; set; }

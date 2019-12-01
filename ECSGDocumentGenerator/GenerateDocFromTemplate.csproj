@@ -68,7 +68,7 @@
     <Compile Include="Domain\SensitiveReport.cs" />
     <Compile Include="Domain\Sort.cs" />
     <Compile Include="GenerateDocument.cs" />
-    <Compile Include="Domain\Report.cs" />
+    <Compile Include="Domain\NonSensitiveReport.cs" />
     <Compile Include="Model\ContentControlXmlMetadata.cs" />
     <Compile Include="Model\CustomXmlPartCore.cs" />
     <Compile Include="Model\CustomXmlPartHelper.cs" />
@@ -79,25 +79,23 @@
     <Compile Include="Model\OpenXmlElementDataContext.cs" />
     <Compile Include="Model\OpenXmlHelper.cs" />
     <Compile Include="Model\PlaceHolderType.cs" />
-    <Compile Include="MyDocGenerator - Copy.cs" />
-    <Compile Include="MyDocGenerator.cs" />
     <Compile Include="MyGenClass.cs" />
     <Compile Include="SensitiveDocumentGenerator.cs" />
     <Compile Include="OpenDocumentUtil.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="NonSensitiveDocumentGenerator.cs" />
-    <Compile Include="RefreshableDocumentGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Data\sensitive-data.json" />
     <None Include="Data\non-sensitive-data.json" />
     <None Include="json1.json" />
+    <None Include="json2.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="XMLFile1.xml" />
+    <Content Include="XMLFile2.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

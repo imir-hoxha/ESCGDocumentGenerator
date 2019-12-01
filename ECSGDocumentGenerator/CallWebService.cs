@@ -12,7 +12,7 @@ namespace ECSGDocumentGenerator
     public class CallWebService
     {
 
-        public static HttpWebResponse makePostRequest(string url)
+        public static HttpWebResponse GetSensitiveJsonData(string url)
         {
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.Headers.Add("X-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJlbmFibGVkIjp0cnVlLCJhY2NvdW50Tm9uRXhwaXJlZCI6dHJ1ZSwiZGVzY2VuZGFudFNjb3BlcyI6WyIqIl0sImFjY291bnROb25Mb2NrZWQiOnRydWUsImNyZWRlbnRpYWxzTm9uRXhwaXJlZCI6dHJ1ZSwidXNlcm5hbWUiOm51bGwsImF1dGhvcml0aWVzIjpbeyJhdXRob3JpdHkiOiJST0xFX1BPTElORSJ9XSwicGFzc3dvcmQiOm51bGwsImlhdCI6MTU3NDI3NTExMSwiZXhwIjoxNTc5NTM0NzExfQ.zo5MNcCCnxm1U5OHWoHBpkap7-tjbYvvHqqL8xy6Cuw");
@@ -21,20 +21,17 @@ namespace ECSGDocumentGenerator
             req.ContentType = "application/json";
             req.Accept = "application/json";
             req.MediaType = "application/json";
-            //req.Host = "s-themis-acc.net1.cec.eu.int:8044";
+            req.Host = "s-themis-acc.net1.cec.eu.int:8044";
 
-            System.Text.ASCIIEncoding encoding = new ASCIIEncoding();
+            ASCIIEncoding encoding = new ASCIIEncoding();
             string json = "{\"memberState\":\"SE\"}";
             byte[] postByteArray = encoding.GetBytes(json);
-            Stream requestStream = req.GetRequestStream();
-            requestStream.Write(postByteArray, 0, postByteArray.Length);
-            requestStream.Close();
-
-            WebResponse response = req.GetResponse();
-            Stream responseStream = response.GetResponseStream();
-            StreamReader streamReader = new StreamReader(responseStream);
-            HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-            return resp;
+            using (Stream requestStream = req.GetRequestStream())
+            {
+                requestStream.Write(postByteArray, 0, postByteArray.Length);
+                
+            }
+            return (HttpWebResponse)req.GetResponse();
         }
 
 

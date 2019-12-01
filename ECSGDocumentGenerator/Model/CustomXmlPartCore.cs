@@ -40,31 +40,31 @@ namespace ECSGDocumentGenerator.Model
             return customXmlPart;
         }
 
-        public void RemoveCustomXmlPart(MainDocumentPart mainDocumentPart, CustomXmlPart customXmlPart)
-        {
-            if (mainDocumentPart == null)
-            {
-                throw new ArgumentNullException("mainDocumentPart");
-            }
+        //public void RemoveCustomXmlPart(MainDocumentPart mainDocumentPart, CustomXmlPart customXmlPart)
+        //{
+        //    if (mainDocumentPart == null)
+        //    {
+        //        throw new ArgumentNullException("mainDocumentPart");
+        //    }
 
-            if (customXmlPart != null)
-            {
-                RemoveCustomXmlParts(mainDocumentPart, new List<CustomXmlPart>(new CustomXmlPart[] { customXmlPart }));
-            }
-        }
+        //    if (customXmlPart != null)
+        //    {
+        //        RemoveCustomXmlParts(mainDocumentPart, new List<CustomXmlPart>(new CustomXmlPart[] { customXmlPart }));
+        //    }
+        //}
 
-        public void RemoveCustomXmlParts(OpenXmlPartContainer mainDocumentPart, IList<CustomXmlPart> customXmlParts)
-        {
-            if (mainDocumentPart == null)
-            {
-                throw new ArgumentNullException("mainDocumentPart");
-            }
+        //public void RemoveCustomXmlParts(OpenXmlPartContainer mainDocumentPart, IList<CustomXmlPart> customXmlParts)
+        //{
+        //    if (mainDocumentPart == null)
+        //    {
+        //        throw new ArgumentNullException("mainDocumentPart");
+        //    }
 
-            if (customXmlParts != null)
-            {
-                mainDocumentPart.DeleteParts<CustomXmlPart>(customXmlParts);
-            }
-        }
+        //    if (customXmlParts != null)
+        //    {
+        //        mainDocumentPart.DeleteParts<CustomXmlPart>(customXmlParts);
+        //    }
+        //}
 
         public CustomXmlPart GetCustomXmlPart(MainDocumentPart mainDocumentPart)
         {

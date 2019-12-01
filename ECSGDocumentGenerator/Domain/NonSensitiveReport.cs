@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1.Domain
 {
-    public class Report
+    public class NonSensitiveReport
     {
         public Guid Id = Guid.Empty;
         /// <summary>

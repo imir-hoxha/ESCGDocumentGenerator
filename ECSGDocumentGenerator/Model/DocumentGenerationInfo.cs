@@ -16,7 +16,9 @@ namespace ECSGDocumentGenerator.Model
 
         public byte[] TemplateData { get; set; }
 
-        public object DataContext { get; set; }
+        public Content DataContext { get; set; }
+
+        public Content[] Contents { get; set; }
 
         public bool IsDataBoundControls { get; set; }
     }
