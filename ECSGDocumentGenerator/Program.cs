@@ -1,16 +1,8 @@
-﻿using ConsoleApp1.Domain;
+﻿using ECSGDocumentGenerator;
 using ECSGDocumentGenerator.Model;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
-using ECSGDocumentGenerator;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 
 namespace ConsoleApp1
 {
@@ -82,7 +74,8 @@ namespace ConsoleApp1
         {
             //string jsonFilePath = Path.Combine(@"Docs\templates", jsonData);
             string jsonFilePath = jsonData;
-            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonData), fileTemplate, false);
+            var dataArray = GetDataContext();
+            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonData), dataArray, fileTemplate, false);
             SensitiveDocumentGenerator myDocGen = new SensitiveDocumentGenerator(generationInfo);
             //(string headerTemplateFile, string bodyTemplateFile, List<Report> dataContext)
             string bodyDoc = Path.Combine(@"Docs\templates", "body.docx");
@@ -202,11 +195,12 @@ namespace ConsoleApp1
             return repo;
         }
 
-        private static DocumentGenerationInfo GetDocumentGenerationInfo(string docType, string docVersion, Content dataContext, string wordTemplateFile, bool useDataBoundControls)
+        private static DocumentGenerationInfo GetDocumentGenerationInfo(string docType, string docVersion, Content dataContext, Content[] data, string wordTemplateFile, bool useDataBoundControls)
         {
             DocumentGenerationInfo generationInfo = new DocumentGenerationInfo();
             generationInfo.Metadata = new DocumentMetadata() { DocumentType = docType, DocumentVersion = docVersion };
             generationInfo.DataContext = dataContext;
+            generationInfo.Data = data;
             //generationInfo.Contents = new Content[2];
             generationInfo.TemplateData = File.ReadAllBytes(Path.Combine(@"Docs\templates", wordTemplateFile));
             generationInfo.IsDataBoundControls = useDataBoundControls;
