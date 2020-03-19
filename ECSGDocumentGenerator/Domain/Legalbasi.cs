@@ -1,6 +1,6 @@
 ﻿namespace ECSGDocumentGenerator
 {
-    public class Legalbasi
+    public class LegalBasis
     {
         public bool selected { get; set; }
         public bool disabled { get; set; }

@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace ConsoleApp1
 {
-    internal class RefreshableDocumentGenerator : NonSensitiveDocumentGenerator
+    internal class RefreshableDocumentGenerator : NonSensitiveDocumentGeneratorOLD
     {
         //private DocumentGenerationInfo generationInfo;
 

@@ -1,6 +1,6 @@
 ﻿namespace ECSGDocumentGenerator
 {
-    public class Leaddg
+    public class LeadDG
     {
         public string id { get; set; }
         public string text { get; set; }

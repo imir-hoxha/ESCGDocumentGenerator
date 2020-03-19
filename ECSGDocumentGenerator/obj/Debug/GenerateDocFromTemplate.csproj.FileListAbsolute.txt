@@ -10,7 +10,6 @@ C:\Dev\ConsoleApp1\ConsoleApp1\bin\Debug\ECSG.pdb
 C:\Dev\ConsoleApp1\ConsoleApp1\obj\Debug\ECSG.exe
 C:\Dev\ConsoleApp1\ConsoleApp1\obj\Debug\ECSG.pdb
 C:\Dev\ESCGDocumentGenerator\ECSGDocumentGenerator\obj\Debug\GenerateDocFromTemplate.csprojAssemblyReference.cache
-C:\Dev\ESCGDocumentGenerator\ECSGDocumentGenerator\obj\Debug\GenerateDocFromTemplate.csproj.CoreCompileInputs.cache
 C:\Dev\ESCGDocumentGenerator\ECSGDocumentGenerator\bin\Debug\ECSGDocumentGenerator.exe.config
 C:\Dev\ESCGDocumentGenerator\ECSGDocumentGenerator\bin\Debug\ECSGDocumentGenerator.exe
 C:\Dev\ESCGDocumentGenerator\ECSGDocumentGenerator\bin\Debug\ECSGDocumentGenerator.pdb

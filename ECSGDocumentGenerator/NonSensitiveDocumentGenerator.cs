@@ -1,77 +1,144 @@
 ﻿using ConsoleApp1.Domain;
 using ECSGDocumentGenerator.Model;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ECSGDocumentGenerator.Domain;
 
-namespace ConsoleApp1
+namespace ECSGDocumentGenerator
 {
     public class NonSensitiveDocumentGenerator : DocumentGenerator
     {
-        #region PlaceHolders
-        // Content Control Tags
-        protected const string PlaceholderIgnoreA = "PlaceholderIgnoreA";
-        protected const string PlaceholderIgnoreB = "PlaceholderIgnoreB";
-
-        protected const string PlaceholderContainerA = "PlaceholderContainerA";
-
-        protected const string PlaceholderRecursiveA = "PlaceholderRecursiveA";
-        protected const string PlaceholderRecursiveB = "PlaceholderRecursiveB";
-
-        protected const string PlaceholderNonRecursiveA = "PlaceholderNonRecursiveA";
-        protected const string PlaceholderNonRecursiveB = "PlaceholderNonRecursiveB";
-        protected const string PlaceholderNonRecursiveC = "PlaceholderNonRecursiveC";
-        protected const string PlaceholderNonRecursiveD = "PlaceholderNonRecursiveD";
-        protected const string PlaceholderNonRecursiveE = "PlaceholderNonRecursiveE";
-
-        protected const string PlaceholderNonRecursiveF = "PlaceholderNonRecursiveF";
-        protected const string PlaceholderNonRecursiveG = "PlaceholderNonRecursiveG";
-        protected const string PlaceholderNonRecursiveH = "PlaceholderNonRecursiveH";
-        protected const string PlaceholderNonRecursiveI = "PlaceholderNonRecursiveI";
-        protected const string PlaceholderNonRecursiveJ = "PlaceholderNonRecursiveJ";
-
-        protected const string PlaceholderNonRecursiveK = "PlaceholderNonRecursiveK";
-        protected const string PlaceholderNonRecursiveL = "PlaceholderNonRecursiveL";
-        protected const string PlaceholderNonRecursiveM = "PlaceholderNonRecursiveM";
-        protected const string PlaceholderNonRecursiveN = "PlaceholderNonRecursiveN";
-        #endregion
+        public static Dictionary<string, PlaceHolderType> PlaceHolderTagToTypeCollection { get; set; }
 
         public NonSensitiveDocumentGenerator(DocumentGenerationInfo generationInfo) : base(generationInfo) { }
-
-        //it is overwritten here but it does not get used directly. it is called in the deriving class
         protected override Dictionary<string, PlaceHolderType> GetPlaceHolderTagToTypeCollection()
         {
             Dictionary<string, PlaceHolderType> placeHolderTagToTypeCollection = new Dictionary<string, PlaceHolderType>
             {
 
-                // Handle ignore placeholders
-                { PlaceholderIgnoreA, PlaceHolderType.Ignore },
-                { PlaceholderIgnoreB, PlaceHolderType.Ignore },
-
                 // Handle container placeholders            
-                { PlaceholderContainerA, PlaceHolderType.Container },
-
-                // Handle recursive placeholders       
-                { PlaceholderRecursiveA, PlaceHolderType.Recursive },
-                { PlaceholderRecursiveB, PlaceHolderType.Recursive },
+                { DocumentPlaceHolders.PlaceholderContainerA, PlaceHolderType.Container },
 
                 // Handle non recursive placeholders
-                { PlaceholderNonRecursiveA, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveB, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveC, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveD, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveE, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveF, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveG, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveH, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveI, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveJ, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveK, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveL, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveM, PlaceHolderType.NonRecursive },
-                { PlaceholderNonRecursiveN, PlaceHolderType.NonRecursive }
+                { DocumentPlaceHolders.PlaceholderNonRecursiveA, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveB, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveC, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveD, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveE, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveF, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveG, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveH, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveI, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveJ, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveK, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveL, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveM, PlaceHolderType.NonRecursive },
+                { DocumentPlaceHolders.PlaceholderNonRecursiveN, PlaceHolderType.NonRecursive }
             };
 
             return placeHolderTagToTypeCollection;
+        }
+
+        //TODO: change content[] datacontext paramater to 
+        public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile, Content dataContext)
+        {
+
+            using (FileStream fs = File.Open(headerTemplateFile, FileMode.Open))
+            {
+                using (WordprocessingDocument myDoc = WordprocessingDocument.Open(fs, true))
+                {
+                    MainDocumentPart mainPart = myDoc.MainDocumentPart;
+                    DocumentGenerationInfo generationInfo = new DocumentGenerationInfo();
+                    generationInfo.DataContext = dataContext;
+                    int counter = 0;
+                    //foreach (var repo in generationInfo.DataContext.content)
+                    //{
+
+                        using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
+                        {
+                            using (var memoryStream = new MemoryStream())
+                            {
+                                fileStream.CopyTo(memoryStream);
+
+                                using (WordprocessingDocument chunkDocument = WordprocessingDocument.Open(memoryStream, true))
+                                {
+                                    MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
+                                    Document document = mainDocPart.Document;
+                                    this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = generationInfo.DataContext });
+
+                                }
+
+                                memoryStream.Seek(0, SeekOrigin.Begin);
+                                // Create an AlternativeFormatImportPart from the MemoryStream.
+                                string altChunkId = "AltChunkId" + Guid.NewGuid();
+                                AlternativeFormatImportPart chunk = myDoc.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+
+                                chunk.FeedData(memoryStream);
+
+                                AltChunk altChunk = new AltChunk();
+                                altChunk.Id = altChunkId;
+                                counter++;
+                                if (counter > 0)
+                                {
+                                    mainPart.Document.Body.AppendChild(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+                                }
+
+                                mainPart.Document.Body.AppendChild(altChunk);
+                                mainPart.Document.Save();
+
+                            }
+
+                        }
+                    //}
+                }
+            }
+        }
+
+      
+        protected override void ContainerPlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
+        {
+            if (openXmlElementDataContext == null || openXmlElementDataContext.Element == null || openXmlElementDataContext.DataContext == null)
+            {
+                return;
+            }
+
+            string tagPlaceHolderValue = string.Empty;
+            string tagGuidPart = string.Empty;
+            GetTagValue(openXmlElementDataContext.Element as SdtElement, out tagPlaceHolderValue, out tagGuidPart);
+
+            string tagValue = string.Empty;
+            string content = string.Empty;
+
+            switch (tagPlaceHolderValue)
+            {
+                case DocumentPlaceHolders.PlaceholderContainerA:
+                    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+
+                    if (!string.IsNullOrEmpty(tagValue))
+                    {
+                        SetTagValue(openXmlElementDataContext.Element as SdtElement, GetFullTagValue(tagPlaceHolderValue, tagValue));
+                    }
+
+                    foreach (var v in openXmlElementDataContext.Element.Elements())
+                    {
+                        SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = v, DataContext = openXmlElementDataContext.DataContext });
+                    }
+
+                    break;
+            }
+        }
+
+        protected override void RecursivePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
+        {
+            throw new NotImplementedException();
+
         }
 
         protected override void NonRecursivePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
@@ -90,140 +157,112 @@ namespace ConsoleApp1
 
             switch (tagPlaceHolderValue)
             {
-                case PlaceholderNonRecursiveA:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C1;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveA:
+                    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                    content = openXmlElementDataContext.DataContext.hit.memberState;
                     break;
-                case PlaceholderNonRecursiveB:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C24;
-                    break;
-                case PlaceholderNonRecursiveC:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C2;
-                    break;
-                case PlaceholderNonRecursiveD:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C18;
-                    break;
-                case PlaceholderNonRecursiveE:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C14;
-                    break;
-                case PlaceholderNonRecursiveF:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).P1;
-                    break;
-                case PlaceholderNonRecursiveH:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).P22;
-                    break;
-                case PlaceholderNonRecursiveI:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).P1;
-                    break;
-                case PlaceholderNonRecursiveJ:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).P1;
-                    break;
-                case PlaceholderNonRecursiveK:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).P22;
-                    break;
-                case PlaceholderNonRecursiveL:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).ED1;
-                    break;
-                case PlaceholderNonRecursiveM:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C9;
-                    break;
-                case PlaceholderNonRecursiveN:
-                    tagValue = ((openXmlElementDataContext.DataContext) as Report).Id.ToString();
-                    content = ((openXmlElementDataContext.DataContext) as Report).C28;
-                    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveB:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C24;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveC:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C2;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveD:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C18;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveE:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C14;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveF:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.P1;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveH:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.P22;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveI:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.P1;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveJ:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.P1;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveK:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.P22;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveL:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.ED1;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveM:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C9;
+                //    break;
+                //case DocumentPlaceHolders.PlaceholderNonRecursiveN:
+                //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+                //    content = openXmlElementDataContext.DataContext.hit.C28;
+                //    break;
             }
 
             if (!string.IsNullOrEmpty(tagValue))
             {
-                this.SetTagValue(openXmlElementDataContext.Element as SdtElement, GetFullTagValue(tagPlaceHolderValue, tagValue));
+                SetTagValue(openXmlElementDataContext.Element as SdtElement, GetFullTagValue(tagPlaceHolderValue, tagValue));
             }
 
             this.SetContentOfContentControl(openXmlElementDataContext.Element as SdtElement, content);
         }
 
-        protected override void RecursivePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
-        {
-            if (openXmlElementDataContext == null || openXmlElementDataContext.Element == null || openXmlElementDataContext.DataContext == null)
-            {
-                return;
-            }
-
-            string tagGuidPart;
-            string tagPlaceHolderValue;
-            GetTagValue(openXmlElementDataContext.Element as SdtElement, out tagPlaceHolderValue, out tagGuidPart);
-
-            switch (tagPlaceHolderValue)
-            {
-                case PlaceholderRecursiveA:
-
-                    //foreach (Vendor testB in ((openXmlElementDataContext.DataContext) as Order).vendors)
-                    //{
-                    //    SdtElement clonedElement = this.CloneElementAndSetContentInPlaceholders(new OpenXmlElementDataContext() { Element = openXmlElementDataContext.Element, DataContext = testB });
-                    //}
-
-                    openXmlElementDataContext.Element.Remove();
-
-                    break;
-                case PlaceholderRecursiveB:
-
-                    //foreach (Item testC in ((openXmlElementDataContext.DataContext) as Order).items)
-                    //{
-                    //    SdtElement clonedElement = this.CloneElementAndSetContentInPlaceholders(new OpenXmlElementDataContext() { Element = openXmlElementDataContext.Element, DataContext = testC });
-                    //}
-
-                    openXmlElementDataContext.Element.Remove();
-                    break;
-            }
-        }
-
-        protected override void ContainerPlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
-        {
-            if (openXmlElementDataContext == null || openXmlElementDataContext.Element == null || openXmlElementDataContext.DataContext == null)
-            {
-                return;
-            }
-
-            string tagPlaceHolderValue = string.Empty;
-            string tagGuidPart = string.Empty;
-            GetTagValue(openXmlElementDataContext.Element as SdtElement, out tagPlaceHolderValue, out tagGuidPart);
-
-            string tagValue = string.Empty;
-            string content = string.Empty;
-
-            switch (tagPlaceHolderValue)
-            {
-                case PlaceholderContainerA:
-                    tagValue = (openXmlElementDataContext.DataContext as Report).Id.ToString();
-
-                    if (!string.IsNullOrEmpty(tagValue))
-                    {
-                        this.SetTagValue(openXmlElementDataContext.Element as SdtElement, GetFullTagValue(tagPlaceHolderValue, tagValue));
-                    }
-
-                    foreach (var v in openXmlElementDataContext.Element.Elements())
-                    {
-                        this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = v, DataContext = openXmlElementDataContext.DataContext });
-                    }
-
-                    break;
-            }
-        }
-
-        //protected override void IgnorePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
+        //public static string GetFullTagValue(string templateTagPart, string tagGuidPart)
         //{
-        //    //throw new System.NotImplementedException();
+        //    return templateTagPart + ":" + tagGuidPart;
         //}
 
+        //public static void SetTagValue(SdtElement element, string tagValue)
+        //{
+        //    Tag tag = GetTag(element);
+        //    tag.Val.Value = tagValue;
+        //}
+
+        //public static string GetTagValue(SdtElement element, out string templateTagPart, out string tagGuidPart)
+        //{
+        //    OpenXmlHelper openXmlHelper = new OpenXmlHelper(DocumentGenerationInfo.NamespaceUri);
+        //    templateTagPart = string.Empty;
+        //    tagGuidPart = string.Empty;
+        //    Tag tag = GetTag(element);
+
+        //    string fullTag = (tag == null || (tag.Val.HasValue == false)) ? string.Empty : tag.Val.Value;
+
+        //    if (!string.IsNullOrEmpty(fullTag))
+        //    {
+        //        string[] tagParts = fullTag.Split(':');
+
+        //        if (tagParts.Length == 2)
+        //        {
+        //            templateTagPart = tagParts[0];
+        //            tagGuidPart = tagParts[1];
+        //        }
+        //        else if (tagParts.Length == 1)
+        //        {
+        //            templateTagPart = tagParts[0];
+        //        }
+        //    }
+
+        //    return fullTag;
+        //}
+
+        //public static Tag GetTag(SdtElement element)
+        //{
+        //    if (element == null)
+        //        throw new ArgumentNullException("element");
+
+        //    return element.SdtProperties.Elements<Tag>().FirstOrDefault();
+        //}
     }
 }

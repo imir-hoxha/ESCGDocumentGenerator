@@ -19,7 +19,7 @@
         public string memberState { get; set; }
         public string policyContext { get; set; }
         public string legalAssessment { get; set; }
-        public Leaddg leadDg { get; set; }
+        public LeadDG leadDg { get; set; }
         public string[] memberStates { get; set; }
         public string caseTitle { get; set; }
         public string reason { get; set; }
@@ -27,7 +27,7 @@
         public bool caseSensitivity { get; set; }
         public bool caseSensitivitySg { get; set; }
         public bool caseSensitivityLs { get; set; }
-        public Legalbasi[] legalBasis { get; set; }
+        public LegalBasis[] legalBasis { get; set; }
         public string creationDate { get; set; }
         public bool article259 { get; set; }
         public bool disabled { get; set; }

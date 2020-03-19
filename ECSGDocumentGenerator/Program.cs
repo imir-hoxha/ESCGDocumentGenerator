@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Configuration;
 
 namespace ConsoleApp1
 {
@@ -18,77 +20,40 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            CallWebService.makePostRequest("http://s-themis-acc.net1.cec.eu.int:8044/doSearch?size=10&page=0&sort=ASC");
+            
+            //string jsonBody = "{\"memberState\":\"SE\"}";
+            //HttpWebResponse resp = ThemesInfringementService.GetSensitiveJsonData($"{ThemesHeadersConfiguration.ThemesServiceUrl}?size=10&page=0&sort=ASC", 
+            //    jsonBody,
+            //    ThemesHeadersConfiguration.ThemesAuthenticationToken,
+            //    ThemesHeadersConfiguration.ThemesApplicationHeader,
+            //    ThemesHeadersConfiguration.ThemesHost);
 
-            //string d = CallWebService.makePostRequestUsingWebClient("http://s-themis-acc.net1.cec.eu.int:8044/doSearch?size=10&page=0&sort=ASC");
-            //GenerateDocumentUsingDocGenerator();
-
-            //GeneratedClassA cls = new GeneratedClassA();
-            //cls.CreatePackage(@"C:\Dev\Doc3.docx");
-            //MyDocGenerator.GetPlaceHolderTagToTypeCollection();
-
-            //string jsonFilePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
-            //string jsonSensitiveFilePath = Path.Combine(@"Docs\templates", "sensitive-data.json");
-
-            //List<SensitiveReport> sensitiveRepData = GetDataContextSensitiveData(jsonSensitiveFilePath);
-            //foreach (var item in sensitiveRepData[0].content)
+            //if (resp.StatusCode == HttpStatusCode.OK)
             //{
-            //    NewMethod(item.hit);
+            //    WebResponse response = resp;
+            //    Stream responseStream = response.GetResponseStream();
+            //    StreamReader streamReader = new StreamReader(responseStream);
+            //    string responseData = streamReader.ReadToEnd();
+            //    response.Close();
+
+            //    GenerateDocument(responseData, "header.docx");
+
             //}
-
-
-            //----------------------------------------
-            //GenerateDocument();
-            //----------------------------------------
-
+            //else
+            //{
+            //    Console.WriteLine(resp.StatusCode);
+            //}
         }
 
-        private static void GenerateDocument()
+        private static void GenerateDocument(string jsonData, string fileTemplate)
         {
-            string jsonFilePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
-            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonFilePath), "header.docx", false);
-            MyDocGenerator myDocGen = new MyDocGenerator(generationInfo);
-            //(string headerTemplateFile, string bodyTemplateFile, List<Report> dataContext)
-            string bodyDoc = Path.Combine(@"Docs\templates", "body.docx");
-            byte[] result = myDocGen.MergeAndGenerateTemplate(bodyDoc);
-            WriteOutputToFile("NonSensitiveGeneratedDocument-v2.docx", "body.docx", result);
-            ////GenerateSensitiveDocumentUsingDocGenerator();
-        }
+            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonData), fileTemplate, false);
+            SensitiveDocumentGenerator myDocGen = new SensitiveDocumentGenerator(generationInfo);
 
-        //private static void NewMethod(Hit sensitiveRepData)
-        //{
-        //    string tagPlaceHolderValue = "PlaceholderNonRecursiveA";
-        //    switch (tagPlaceHolderValue)
-        //    {
-        //        case "PlaceholderNonRecursiveA":
-        //            Console.WriteLine(sensitiveRepData.Id.ToString());
-        //            //Console.WriteLine(((sensitiveRepData[0].content[0].hit) as Hit).leadDg.text);
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
-
-        private static RefreshableDocumentGenerator GenerateDocumentUsingDocGenerator()
-        {
-            string jsonFilePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
-            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonFilePath), "body.docx", false);
-
-            RefreshableDocumentGenerator refreshableDocumentGenerator = new RefreshableDocumentGenerator(generationInfo);
-            byte[] result = refreshableDocumentGenerator.GenerateDocument();
-            WriteOutputToFile("NonSensitiveGeneratedDocument.docx", "DG Non sensitive report-Template.docx", result);
-            return refreshableDocumentGenerator;
-        }
-
-        private static SensitiveDocumentGenerator GenerateSensitiveDocumentUsingDocGenerator()
-        {
-            string jsonFilePath = Path.Combine(@"Docs\templates", "sensitive-data.json");
-            DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SensitiveDocument", "1.0", GetDataContextSensitiveData(jsonFilePath), "DG Sensitive report-Template.docx", false);
-
-            SensitiveDocumentGenerator refreshableDocumentGenerator = new SensitiveDocumentGenerator(generationInfo);
-            byte[] result = refreshableDocumentGenerator.GenerateDocument();
-            WriteOutputToFile("NewSensitiveDocument.docx", "DG Sensitive report-Template.docx", result);
-            return refreshableDocumentGenerator;
+            string bodyDoc = Path.Combine(@"Docs\templates", "DG Sensitive report-BodyTemplate.docx");
+            //byte[] result = myDocGen.MergeAndGenerateTemplate(bodyDoc);
+            byte[] result = myDocGen.GenerateAndMergeTemplates("",bodyDoc,GetAllDataContext(jsonData));
+            WriteOutputToFile("NonSensitiveGeneratedDocument-v2.docx", "DG Sensitive report-BodyTemplate.docx", result);
         }
 
         private static void WriteOutputToFile(string fileName, string templateName, byte[] fileContents)
@@ -111,92 +76,62 @@ namespace ConsoleApp1
             Console.ForegroundColor = consoleColor;
         }
 
-        private static List<SensitiveReport> GetDataContextSensitiveData(string jsonFilePath)
-        {
-            List<SensitiveReport> reps = new List<SensitiveReport>();
-            using (StreamReader r = new StreamReader(jsonFilePath))
-            {
-                string json = r.ReadToEnd();
-                var item = JsonConvert.DeserializeObject<SensitiveReport>(json);
-
-                for (int i = 0; i < item.content.Length; i++)
-                {
-                    reps.Add(new SensitiveReport()
-                    {
-                        content = item.content,
-                        pageable = item.pageable,
-                        totalElements = item.totalElements,
-                        last = item.last,
-                        size = item.size,
-                        number = item.number,
-                        sort = item.sort,
-                        first = item.first,
-                        numberOfElements = item.numberOfElements
-
-                    });
-                }
-
-            }
-
-            return reps;
-        }
-
-        private static List<Report> GetDataContext(string jsonFilePath)
-        {
-            List<Report> repo = new List<Report>();
-            using (StreamReader r = new StreamReader(jsonFilePath))
-            {
-                string json = r.ReadToEnd();
-                List<Report> items = JsonConvert.DeserializeObject<List<Report>>(json);
-                items.ForEach(x => repo.Add(new Report()
-                {
-
-                    C1 = x.C1,
-                    C24 = x.C24,
-                    C2 = x.C2,
-                    C18 = x.C18,
-                    C14 = x.C14,
-                    P1 = x.P1,
-                    P22 = x.P22,
-                    ED1 = x.ED1,
-                    C9 = x.C9,
-                    C28 = x.C28
-
-                }));
-
-            }
-
-            return repo;
-        }
-
-        //private static Report GetDataContext()
+        //private static List<SensitiveReport> GetDataContextSensitiveData(string jsonFilePath)
         //{
-        //    var filePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
-        //    Report repo = null;
-        //    using (StreamReader r = new StreamReader(filePath))
+        //    List<SensitiveReport> reps = new List<SensitiveReport>();
+        //    using (StreamReader r = new StreamReader(jsonFilePath))
         //    {
         //        string json = r.ReadToEnd();
-        //        Report item = JsonConvert.DeserializeObject<Report>(json);
+        //        var item = JsonConvert.DeserializeObject<SensitiveReport>(json);
 
-        //        repo = new Report()
+        //        for (int i = 0; i < item.content.Length; i++)
         //        {
-        //            C1 = item.C1,
-        //            C24 = item.C24,
-        //            C2 = item.C2,
-        //            C18 = item.C18,
-        //            C14 = item.C14,
-        //            P1 = item.P1,
-        //            P22 = item.P22,
-        //            ED1 = item.ED1,
-        //            C9 = item.C9,
-        //            C28 = item.C28
-        //        };
+        //            reps.Add(new SensitiveReport()
+        //            {
+        //                content = item.content,
+        //                pageable = item.pageable,
+        //                totalElements = item.totalElements,
+        //                last = item.last,
+        //                size = item.size,
+        //                number = item.number,
+        //                sort = item.sort,
+        //                first = item.first,
+        //                numberOfElements = item.numberOfElements
+
+        //            });
+        //        }
+
         //    }
 
-        //    return repo;
+        //    return reps;
         //}
 
-        private static DocumentGenerationInfo GetDocumentGenerationInfo(string docType, string docVersion, object dataContext, string wordTemplateFile, bool useDataBoundControls)
+        private static Content GetDataContext(string jsonData)
+        {
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                throw new ArgumentNullException("jsonData");
+            }
+
+            var data = JsonConvert.DeserializeObject<SensitiveReport>(jsonData).content.ToArray().FirstOrDefault();
+
+            return data;
+        }
+
+        private static Content[] GetAllDataContext(string jsonData)
+        {
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                throw new ArgumentNullException("jsonData");
+            }
+
+            var data = JsonConvert.DeserializeObject<SensitiveReport>(jsonData).content.ToArray();
+
+            return data;
+        }
+
+
+        private static DocumentGenerationInfo GetDocumentGenerationInfo(string docType, string docVersion, Content dataContext, string wordTemplateFile, bool useDataBoundControls)
         {
             DocumentGenerationInfo generationInfo = new DocumentGenerationInfo();
             generationInfo.Metadata = new DocumentMetadata() { DocumentType = docType, DocumentVersion = docVersion };
@@ -295,3 +230,115 @@ namespace ConsoleApp1
 //{
 //    Console.WriteLine(xp.RootElement);
 //}
+
+
+
+//string d = CallWebService.makePostRequestUsingWebClient("http://s-themis-acc.net1.cec.eu.int:8044/doSearch?size=10&page=0&sort=ASC");
+//GenerateDocumentUsingDocGenerator();
+
+//GeneratedClassA cls = new GeneratedClassA();
+//cls.CreatePackage(@"C:\Dev\Doc3.docx");
+//MyDocGenerator.GetPlaceHolderTagToTypeCollection();
+
+//string jsonFilePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
+//string jsonSensitiveFilePath = Path.Combine(@"Docs\templates", "sensitive-data.json");
+
+//List<SensitiveReport> sensitiveRepData = GetDataContextSensitiveData(jsonSensitiveFilePath);
+//foreach (var item in sensitiveRepData[0].content)
+//{
+//    NewMethod(item.hit);
+//}
+
+
+//SensitiveReport report = GetDataContext(responseData);
+//Content[] content = report.content;
+//Console.WriteLine(content[0].hit.reasonForSensitivity);
+//for (int i = 0; i < content.Length; i++)
+//{
+//    Console.WriteLine(i + ") " + content[i].hit.reasonForSensitivity);
+//}
+//Console.WriteLine("---------------------------");
+
+////var ct = content.Select(new )
+
+//foreach (Content item in content)
+//{
+//    Console.WriteLine(item.hit.authorOfTheSensitiveSummary + " " + item.hit.caseSensitivity + " " + item.hit.reasonForSensitivity);
+
+//}
+
+
+
+
+//private static void NewMethod(Hit sensitiveRepData)
+//{
+//    string tagPlaceHolderValue = "PlaceholderNonRecursiveA";
+//    switch (tagPlaceHolderValue)
+//    {
+//        case "PlaceholderNonRecursiveA":
+//            Console.WriteLine(sensitiveRepData.Id.ToString());
+//            //Console.WriteLine(((sensitiveRepData[0].content[0].hit) as Hit).leadDg.text);
+//            break;
+//        default:
+//            break;
+//    }
+//}
+
+
+
+//private static SensitiveDocumentGenerator GenerateSensitiveDocumentUsingDocGenerator()
+//{
+//    //string jsonFilePath = Path.Combine(@"Docs\templates", "sensitive-data.json");
+//    DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SensitiveDocument", "1.0", GetDataContextSensitiveData(""), "DG Sensitive report-Template.docx", false);
+
+//    SensitiveDocumentGenerator refreshableDocumentGenerator = new SensitiveDocumentGenerator(generationInfo);
+//    byte[] result = refreshableDocumentGenerator.GenerateDocument();
+//    WriteOutputToFile("NewSensitiveDocument.docx", "DG Sensitive report-Template.docx", result);
+//    return refreshableDocumentGenerator;
+//}
+
+
+
+
+//private static RefreshableDocumentGenerator GenerateDocumentUsingDocGenerator()
+//{
+//    string jsonFilePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
+//    DocumentGenerationInfo generationInfo = GetDocumentGenerationInfo("SomeDocDocumentGenerator", "1.0", GetDataContext(jsonFilePath), "body.docx", false);
+
+//    RefreshableDocumentGenerator refreshableDocumentGenerator = new RefreshableDocumentGenerator(generationInfo);
+//    byte[] result = refreshableDocumentGenerator.GenerateDocument();
+//    WriteOutputToFile("NonSensitiveGeneratedDocument.docx", "DG Non sensitive report-Template.docx", result);
+//    return refreshableDocumentGenerator;
+//}
+
+
+//private static Report GetDataContext()
+//{
+//    var filePath = Path.Combine(@"Docs\templates", "non-sensitive-data.json");
+//    Report repo = null;
+//    using (StreamReader r = new StreamReader(filePath))
+//    {
+//        string json = r.ReadToEnd();
+//        Report item = JsonConvert.DeserializeObject<Report>(json);
+
+//        repo = new Report()
+//        {
+//            C1 = item.C1,
+//            C24 = item.C24,
+//            C2 = item.C2,
+//            C18 = item.C18,
+//            C14 = item.C14,
+//            P1 = item.P1,
+//            P22 = item.P22,
+//            ED1 = item.ED1,
+//            C9 = item.C9,
+//            C28 = item.C28
+//        };
+//    }
+
+//    return repo;
+//}
+
+
+//string jsonFilePath = Path.Combine(@"Docs\templates", jsonData);
+//(string headerTemplateFile, string bodyTemplateFile, List<Report> dataContext)
