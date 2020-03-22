@@ -31,39 +31,39 @@ namespace ESCGDocumentGenertor.API.Controllers
             docs.Add(new Document() { Id = 3, Url = "http://s2019" });
         }
 
-
         [HttpGet]
-        public HttpResponseMessage Get()
+        public IHttpActionResult Get()
         {
-            byte[] myByteArray = new byte[10];
-            MemoryStream stream = new MemoryStream();
-            stream.Write(myByteArray, 0, myByteArray.Length);
-            HttpResponseMessage result = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
-            result.Content = new StreamContent(stream);
-            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
-            result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
-            result.Content.Headers.ContentDisposition.FileName = "testing.docx";
-            //string responseUri = result.RequestMessage.RequestUri.AbsoluteUri.ToString();
-            //string redirectedUrl = null;
-            //if (result.StatusCode == HttpStatusCode.OK)
-            //{
-            //    HttpResponseHeaders headers = result.Headers;
-            //    if (headers != null && headers.Location != null)
-            //    {
-            //        redirectedUrl = headers.Location.AbsoluteUri;
-            //    }
-            //}
-            return result;
+            //Content c = new Content();
+            //c.Hit = new Hit() { Id = content.Id, RefId = content.RefId, Article259 = content.Article259 };
+            //Document d = new Document() { Id = "abc", Url = "http://sp2016" };
+            return Ok(docs);
         }
 
         //[HttpGet]
-        //public IHttpActionResult Get()
+        //public HttpResponseMessage Get()
         //{
-        //    //Content c = new Content();
-        //    //c.Hit = new Hit() { Id = content.Id, RefId = content.RefId, Article259 = content.Article259 };
-        //    //Document d = new Document() { Id = "abc", Url = "http://sp2016" };
-        //    return Ok(docs);
+        //    byte[] myByteArray = new byte[10];
+        //    MemoryStream stream = new MemoryStream();
+        //    stream.Write(myByteArray, 0, myByteArray.Length);
+        //    HttpResponseMessage result = new HttpResponseMessage(System.Net.HttpStatusCode.OK);
+        //    result.Content = new StreamContent(stream);
+        //    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        //    result.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment");
+        //    result.Content.Headers.ContentDisposition.FileName = "testing.docx";
+        //    //string responseUri = result.RequestMessage.RequestUri.AbsoluteUri.ToString();
+        //    //string redirectedUrl = null;
+        //    //if (result.StatusCode == HttpStatusCode.OK)
+        //    //{
+        //    //    HttpResponseHeaders headers = result.Headers;
+        //    //    if (headers != null && headers.Location != null)
+        //    //    {
+        //    //        redirectedUrl = headers.Location.AbsoluteUri;
+        //    //    }
+        //    //}
+        //    return result;
         //}
+
 
         [HttpGet]
         public IHttpActionResult Get([FromODataUri] int key)
