@@ -29,7 +29,7 @@
         public bool caseSensitivityLs { get; set; }
         public LegalBasis[] legalBasis { get; set; }
         public string creationDate { get; set; }
-        public bool article259 { get; set; }
+        public bool Article259 { get; set; }
         public bool disabled { get; set; }
         public string incriminatedFact { get; set; }
     }

@@ -75,7 +75,11 @@ namespace ECSGDocumentGenerator
         }
 
 
+<<<<<<< HEAD
         public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile, Content dataContext)
+=======
+        public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile, SensitiveReport dataContext)
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
         {
 
             using (FileStream fs = File.Open(headerTemplateFile, FileMode.Open))
@@ -86,8 +90,13 @@ namespace ECSGDocumentGenerator
                     DocumentGenerationInfo generationInfo = new DocumentGenerationInfo();
                     generationInfo.DataContext = dataContext;
                     int counter = 0;
+<<<<<<< HEAD
                     //foreach (var repo in generationInfo.DataContext)
                     //{
+=======
+                    foreach (var repo in generationInfo.DataContext.content)
+                    {
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
 
                         using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
                         {
@@ -147,7 +156,11 @@ namespace ECSGDocumentGenerator
             switch (tagPlaceHolderValue)
             {
                 case DocumentPlaceHolders.PlaceholderContainerA:
+<<<<<<< HEAD
                     tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+=======
+                    tagValue = (openXmlElementDataContext.DataContext as NonSensitiveReport).Id.ToString();
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
 
                     if (!string.IsNullOrEmpty(tagValue))
                     {
@@ -186,8 +199,61 @@ namespace ECSGDocumentGenerator
             switch (tagPlaceHolderValue)
             {
                 case DocumentPlaceHolders.PlaceholderNonRecursiveA:
+<<<<<<< HEAD
                     tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
                     content = openXmlElementDataContext.DataContext.hit.memberState;
+=======
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveB:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C24;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveC:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C2;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveD:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C18;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveE:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C14;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveF:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveH:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveI:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveJ:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveK:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveL:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).ED1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveM:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C9;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveN:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C28;
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
                     break;
                 //case DocumentPlaceHolders.PlaceholderNonRecursiveB:
                 //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();

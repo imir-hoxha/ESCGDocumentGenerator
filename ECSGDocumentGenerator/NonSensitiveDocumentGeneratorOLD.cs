@@ -91,6 +91,7 @@ namespace ConsoleApp1
             switch (tagPlaceHolderValue)
             {
                 case PlaceholderNonRecursiveA:
+<<<<<<< HEAD
                     tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
                     content = openXmlElementDataContext.DataContext.hit.memberState;
                     break;
@@ -142,6 +143,59 @@ namespace ConsoleApp1
                 //    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
                 //    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C28;
                 //    break;
+=======
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C1;
+                    break;
+                case PlaceholderNonRecursiveB:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C24;
+                    break;
+                case PlaceholderNonRecursiveC:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C2;
+                    break;
+                case PlaceholderNonRecursiveD:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C18;
+                    break;
+                case PlaceholderNonRecursiveE:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C14;
+                    break;
+                case PlaceholderNonRecursiveF:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case PlaceholderNonRecursiveH:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case PlaceholderNonRecursiveI:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case PlaceholderNonRecursiveJ:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case PlaceholderNonRecursiveK:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case PlaceholderNonRecursiveL:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).ED1;
+                    break;
+                case PlaceholderNonRecursiveM:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C9;
+                    break;
+                case PlaceholderNonRecursiveN:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C28;
+                    break;
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
             }
 
             if (!string.IsNullOrEmpty(tagValue))
@@ -204,7 +258,11 @@ namespace ConsoleApp1
             switch (tagPlaceHolderValue)
             {
                 case PlaceholderContainerA:
+<<<<<<< HEAD
                     tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
+=======
+                    tagValue = (openXmlElementDataContext.DataContext as NonSensitiveReport).Id.ToString();
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
 
                     if (!string.IsNullOrEmpty(tagValue))
                     {

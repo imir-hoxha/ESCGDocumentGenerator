@@ -47,7 +47,66 @@ namespace ECSGDocumentGenerator
         }
 
         //TODO: change content[] datacontext paramater to 
+<<<<<<< HEAD
         public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile, Content dataContext)
+=======
+        //public void GenerateAndMergeTemplates(string headerTemplateFile, string bodyTemplateFile, Content dataContext)
+        //{
+
+        //    using (FileStream fs = File.Open(headerTemplateFile, FileMode.Open))
+        //    {
+        //        using (WordprocessingDocument myDoc = WordprocessingDocument.Open(fs, true))
+        //        {
+        //            MainDocumentPart mainPart = myDoc.MainDocumentPart;
+        //            //DocumentGenerationInfo generationInfo = new DocumentGenerationInfo();
+        //            //generationInfo.DataContext = dataContext;
+        //            int counter = 0;
+        //            //foreach (var repo in generationInfo.DataContext)
+        //            //{
+
+        //                using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
+        //                {
+        //                    using (var memoryStream = new MemoryStream())
+        //                    {
+        //                        fileStream.CopyTo(memoryStream);
+
+        //                        using (WordprocessingDocument chunkDocument = WordprocessingDocument.Open(memoryStream, true))
+        //                        {
+        //                            MainDocumentPart mainDocPart = chunkDocument.MainDocumentPart;
+        //                            Document document = mainDocPart.Document;
+        //                            this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = t }); //repo
+
+        //                    }
+
+        //                        memoryStream.Seek(0, SeekOrigin.Begin);
+        //                        // Create an AlternativeFormatImportPart from the MemoryStream.
+        //                        string altChunkId = "AltChunkId" + Guid.NewGuid();
+        //                        AlternativeFormatImportPart chunk = myDoc.MainDocumentPart.AddAlternativeFormatImportPart(AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+
+        //                        chunk.FeedData(memoryStream);
+
+        //                        AltChunk altChunk = new AltChunk();
+        //                        altChunk.Id = altChunkId;
+        //                        counter++;
+        //                        if (counter > 0)
+        //                        {
+        //                            mainPart.Document.Body.AppendChild(new Paragraph(new Run(new Break { Type = BreakValues.Page })));
+        //                        }
+
+        //                        mainPart.Document.Body.AppendChild(altChunk);
+        //                        mainPart.Document.Save();
+
+        //                    }
+
+        //                }
+        //            //}
+        //        }
+        //    }
+        //}
+
+      
+        protected override void ContainerPlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
         {
 
             using (FileStream fs = File.Open(headerTemplateFile, FileMode.Open))
@@ -73,6 +132,7 @@ namespace ECSGDocumentGenerator
                                     Document document = mainDocPart.Document;
                                     this.SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = document, DataContext = generationInfo.DataContext });
 
+<<<<<<< HEAD
                                 }
 
                                 memoryStream.Seek(0, SeekOrigin.Begin);
@@ -98,12 +158,31 @@ namespace ECSGDocumentGenerator
                         }
                     //}
                 }
+=======
+            switch (tagPlaceHolderValue)
+            {
+                case DocumentPlaceHolders.PlaceholderContainerA:
+                    tagValue = (openXmlElementDataContext.DataContext).Id.ToString();
+
+                    if (!string.IsNullOrEmpty(tagValue))
+                    {
+                        SetTagValue(openXmlElementDataContext.Element as SdtElement, GetFullTagValue(tagPlaceHolderValue, tagValue));
+                    }
+
+                    foreach (var v in openXmlElementDataContext.Element.Elements())
+                    {
+                        SetContentInPlaceholders(new OpenXmlElementDataContext() { Element = v, DataContext = openXmlElementDataContext.DataContext });
+                    }
+
+                    break;
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
             }
         }
 
       
         protected override void ContainerPlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
         {
+<<<<<<< HEAD
             if (openXmlElementDataContext == null || openXmlElementDataContext.Element == null || openXmlElementDataContext.DataContext == null)
             {
                 return;
@@ -139,6 +218,10 @@ namespace ECSGDocumentGenerator
         {
             throw new NotImplementedException();
 
+=======
+            throw new NotImplementedException();
+
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
         }
 
         protected override void NonRecursivePlaceholderFound(string placeholderTag, OpenXmlElementDataContext openXmlElementDataContext)
@@ -158,6 +241,7 @@ namespace ECSGDocumentGenerator
             switch (tagPlaceHolderValue)
             {
                 case DocumentPlaceHolders.PlaceholderNonRecursiveA:
+<<<<<<< HEAD
                     tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
                     content = openXmlElementDataContext.DataContext.hit.memberState;
                     break;
@@ -209,6 +293,59 @@ namespace ECSGDocumentGenerator
                 //    tagValue = openXmlElementDataContext.DataContext.hit.Id.ToString();
                 //    content = openXmlElementDataContext.DataContext.hit.C28;
                 //    break;
+=======
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveB:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C24;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveC:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C2;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveD:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C18;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveE:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C14;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveF:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveH:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveI:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveJ:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveK:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).P22;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveL:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).ED1;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveM:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C9;
+                    break;
+                case DocumentPlaceHolders.PlaceholderNonRecursiveN:
+                    tagValue = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).Id.ToString();
+                    content = ((openXmlElementDataContext.DataContext) as NonSensitiveReport).C28;
+                    break;
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
             }
 
             if (!string.IsNullOrEmpty(tagValue))

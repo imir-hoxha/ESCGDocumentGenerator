@@ -2,7 +2,7 @@
 {
     public class Content
     {
-        public Hit hit { get; set; }
+        public Hit Hit { get; set; }
     }
 
 }

@@ -373,7 +373,11 @@ namespace ECSGDocumentGenerator.Model
                     //    Console.WriteLine(i + ") " + content[i].hit.reasonForSensitivity);
                     //}
 
+<<<<<<< HEAD
                     //foreach (var repo in this.generationInfo.DataContext.content)
+=======
+                    //foreach (var repo in this.generationInfo.DataContext)
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
                     //{
                         using (FileStream fileStream = File.Open(bodyTemplateFile, FileMode.Open))
                         {

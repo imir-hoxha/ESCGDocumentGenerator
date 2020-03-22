@@ -81,6 +81,10 @@
     <Compile Include="Model\OpenXmlElementDataContext.cs" />
     <Compile Include="Model\OpenXmlHelper.cs" />
     <Compile Include="Model\PlaceHolderType.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="MyGenClass.cs" />
+>>>>>>> 3890695f2ae98b5ec3af60a4f929077de2d09acb
     <Compile Include="SensitiveDocumentGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
